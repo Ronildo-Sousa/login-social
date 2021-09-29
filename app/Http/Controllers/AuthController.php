@@ -27,6 +27,7 @@ class AuthController extends Controller
                 ['email' => $user->getEmail()],
                 [
                     'name' => $user->getName(),
+                    'avatar' => $user->getAvatar(),
                     'provider_id' => $user->getId(),
                     'provider' => $provider
                 ]
@@ -37,6 +38,12 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withErrors(['message' => $e->getMessage()]);
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('login');
     }
 
     private function validateProvider(string $provider): bool

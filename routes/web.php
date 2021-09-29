@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,6 @@ Route::get('/{provider}/login', [AuthController::class, 'login'])->name('auth.lo
 Route::get('{provider}/callback', [AuthController::class, 'handleCallback'])->name('auth.callback');
 
 Route::middleware(['auth'])->group(function(){
-    Route::get('admin', function () {
-        dd(auth()->user());
-    })->name('admin');
+    Route::get('admin', [DashboardController::class, 'index'])->name('admin');
+    Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
