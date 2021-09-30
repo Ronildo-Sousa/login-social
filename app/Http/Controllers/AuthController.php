@@ -10,6 +10,15 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+
+    public function welcome()
+    {
+        if (Auth::user()) {
+            return redirect()->route('admin');
+        }
+        return view('welcome', ['user' => Auth::user()]);
+    }
+
     public function login(string $provider)
     {
         $isValidProvider = $this->validateProvider($provider);
@@ -43,12 +52,12 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('login');
+        return redirect()->route('welcome');
     }
 
     private function validateProvider(string $provider): bool
     {
-        $availableProviders = ['github', 'google'];
+        $availableProviders = ['github', 'google', 'gitlab'];
         if (in_array($provider, $availableProviders)) {
             return true;
         }

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::view('/', 'welcome')->name('login');
+Route::get('/', [AuthController::class, 'welcome'])->name('welcome');
 
 Route::get('/{provider}/login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('{provider}/callback', [AuthController::class, 'handleCallback'])->name('auth.callback');

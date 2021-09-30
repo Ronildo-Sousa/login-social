@@ -24,6 +24,11 @@
                     <img  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" />
                 </a>
             </div>
+            <div class="p-2 mr-4 transition duration-500 ease-in-out border-b-2 border-transparent hover:border-gray-500  transform hover:-translate-y-1 hover:scale-110" style="width: 60px">
+                <a href="{{ route('auth.login',['provider' => 'gitlab']) }}">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" />
+                </a>
+            </div>
         </section>
     </main>
 </body>
