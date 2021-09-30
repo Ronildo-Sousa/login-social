@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Auth as ServicesAuth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,12 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    private $authService;
+
+    public function __construct(ServicesAuth $authService)
+    {
+        $this->authService = $authService;
+    }
 
     public function welcome()
     {
@@ -21,7 +28,7 @@ class AuthController extends Controller
 
     public function login(string $provider)
     {
-        $isValidProvider = $this->validateProvider($provider);
+        $isValidProvider = $this->authService->validateProvider($provider);
         if ($isValidProvider) {
             return Socialite::driver($provider)->redirect();
         }
@@ -31,36 +38,16 @@ class AuthController extends Controller
     public function handleCallback(string $provider)
     {
         $user = Socialite::driver($provider)->user();
-        try {
-            $newUser = User::firstOrCreate(
-                ['email' => $user->getEmail()],
-                [
-                    'name' => $user->getName(),
-                    'avatar' => $user->getAvatar(),
-                    'provider_id' => $user->getId(),
-                    'provider' => $provider
-                ]
-            );
 
-            Auth::login($newUser);
-            return redirect()->route('admin');
-        } catch (Exception $e) {
-            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
-        }
+        $newUser = $this->authService->handleUser($user, $provider);
+
+        Auth::login($newUser);
+        return redirect()->route('admin');
     }
 
     public function logout()
     {
         Auth::logout();
         return redirect()->route('welcome');
-    }
-
-    private function validateProvider(string $provider): bool
-    {
-        $availableProviders = ['github', 'google', 'gitlab'];
-        if (in_array($provider, $availableProviders)) {
-            return true;
-        }
-        return false;
     }
 }
